@@ -1,0 +1,11 @@
+{
+  "name": "klausbelegu-portfolio",
+  "version": "1.0.0",
+  "description": "Klaus Belegu's Azure Portfolio",
+  "scripts": {
+    "start": "npx serve -s ."
+  },
+  "dependencies": {
+    "serve": "^14.0.0"
+  }
+}
