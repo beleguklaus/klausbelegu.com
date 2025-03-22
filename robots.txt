@@ -1,0 +1,12 @@
+# robots.txt for klausbelegu.com
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://klausbelegu.com/sitemap.xml
+
+# Disallow sensitive directories
+Disallow: /admin/
+Disallow: /private/
+Disallow: /temp/
+Disallow: /backup/

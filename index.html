@@ -3,8 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Klaus Belegu - Azure Portfolio</title>
+    <title>Klaus Belegu - Azure Cloud Portfolio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-bg: #161b22;
+            --accent-blue: #0078d4;
+            --accent-purple: #7a43b5;
+            --text-primary: #e6edf3;
+            --text-secondary: #8b949e;
+            --border-color: #30363d;
+        }
+        
         * {
             margin: 0;
             padding: 0;
@@ -12,149 +23,813 @@
         }
         
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
             line-height: 1.6;
-            color: #333;
-            background-color: #f5f5f5;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
         }
         
         .container {
+            width: 90%;
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 15px;
         }
         
+        /* Header */
         header {
-            background-color: #0078D4;
-            color: white;
-            padding: 60px 0;
+            padding: 120px 0 80px;
+            background: linear-gradient(to bottom, #0a0c10, var(--bg-color));
             text-align: center;
         }
         
-        header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+        .profile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
         
-        header p {
+        .profile-icon {
+            width: 160px;
+            height: 160px;
+            background-color: var(--card-bg);
+            border-radius: 50%;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--accent-blue);
+            box-shadow: 0 10px 25px rgba(0, 120, 212, 0.2);
+        }
+        
+        .profile-icon i {
+            font-size: 64px;
+            color: var(--accent-blue);
+        }
+        
+        .profile h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        .profile p {
             font-size: 1.2rem;
-            opacity: 0.9;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            max-width: 700px;
         }
         
-        .content {
-            padding: 60px 0;
-            background-color: white;
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
         }
         
-        .coming-soon {
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-primary);
+            background-color: var(--card-bg);
+            padding: 10px 20px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 120, 212, 0.1);
+        }
+        
+        /* Section styling */
+        section {
+            padding: 80px 0;
+        }
+        
+        section:nth-child(odd) {
+            background-color: var(--bg-color);
+        }
+        
+        section:nth-child(even) {
+            background-color: #0a0d14;
+        }
+        
+        .section-title {
             text-align: center;
-            padding: 30px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            margin-bottom: 40px;
+            margin-bottom: 60px;
         }
         
-        .coming-soon h2 {
-            color: #0078D4;
+        .section-title h2 {
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            display: inline-block;
+            position: relative;
+        }
+        
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(to right, var(--accent-blue), var(--accent-purple));
+            border-radius: 2px;
+        }
+        
+        .section-title p {
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        /* Projects grid */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 30px;
+        }
+        
+        .project-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+        
+        .project-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-blue);
+        }
+        
+        .project-header {
+            padding: 15px 20px;
+            background-color: rgba(7, 15, 25, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .project-icon {
+            font-size: 24px;
+            color: var(--accent-blue);
+        }
+        
+        .project-status {
+            font-size: 0.8rem;
+            padding: 5px 10px;
+            border-radius: 20px;
+        }
+        
+        .status-completed {
+            background-color: rgba(16, 124, 16, 0.2);
+            color: #2ECC40;
+            border: 1px solid rgba(16, 124, 16, 0.3);
+        }
+        
+        .status-progress {
+            background-color: rgba(255, 185, 0, 0.2);
+            color: #FFB900;
+            border: 1px solid rgba(255, 185, 0, 0.3);
+        }
+        
+        .status-planned {
+            background-color: rgba(122, 67, 181, 0.2);
+            color: #b47ee5;
+            border: 1px solid rgba(122, 67, 181, 0.3);
+        }
+        
+        .project-body {
+            padding: 20px;
+        }
+        
+        .project-body h3 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+        
+        .project-body p {
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+        
+        .project-tech {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
             margin-bottom: 20px;
         }
         
-        .tech-list {
+        .tech-badge {
+            background-color: rgba(0, 120, 212, 0.1);
+            color: #58a6ff;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            border: 1px solid rgba(0, 120, 212, 0.2);
+        }
+        
+        .project-link {
+            display: inline-block;
+            color: var(--accent-blue);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .project-link:hover {
+            text-decoration: underline;
+        }
+        
+        /* Azure Services */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .service-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 25px;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-blue);
+        }
+        
+        .service-icon {
+            width: 50px;
+            height: 50px;
+            background-color: rgba(0, 120, 212, 0.1);
+            color: var(--accent-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+        
+        .service-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+        
+        .service-card p {
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+            flex-grow: 1;
+        }
+        
+        .service-features {
+            list-style: none;
+        }
+        
+        .service-features li {
+            margin-bottom: 10px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            position: relative;
+            padding-left: 25px;
+        }
+        
+        .service-features li:before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--accent-blue);
+        }
+        
+        /* About section */
+        .about-container {
+            display: flex;
+            gap: 50px;
+            align-items: center;
+        }
+        
+        .about-image {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .about-content {
+            flex: 2;
+        }
+        
+        .about-icon {
+            width: 250px;
+            height: 250px;
+            background-color: var(--card-bg);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 100px;
+            color: var(--accent-blue);
+            border: 2px solid var(--border-color);
+            position: relative;
+        }
+        
+        .about-icon::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(0, 120, 212, 0.1) 0%, rgba(122, 67, 181, 0.1) 100%);
+        }
+        
+        .about-content h3 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+        
+        .about-content p {
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+        
+        .skills-container {
+            margin-top: 30px;
+        }
+        
+        .skills-container h4 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+        
+        .skills-grid {
             display: flex;
             flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .skill-badge {
+            background-color: rgba(0, 120, 212, 0.1);
+            color: #58a6ff;
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            border: 1px solid rgba(0, 120, 212, 0.2);
+        }
+        
+        /* Contact section */
+        .contact-options {
+            display: flex;
             justify-content: center;
-            gap: 30px;
-            margin: 40px 0;
+            gap: 40px;
+            flex-wrap: wrap;
+            margin-top: 30px;
         }
         
-        .tech-item {
-            background-color: #f9f9f9;
-            padding: 20px;
+        .contact-option {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
             border-radius: 8px;
-            width: 250px;
+            padding: 25px;
+            width: 300px;
             text-align: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, border-color 0.3s ease;
         }
         
-        .tech-item:hover {
+        .contact-option:hover {
             transform: translateY(-5px);
+            border-color: var(--accent-blue);
         }
         
-        .tech-item h3 {
-            color: #0078D4;
+        .contact-icon {
+            font-size: 2rem;
+            color: var(--accent-blue);
+            margin-bottom: 15px;
+        }
+        
+        .contact-option h3 {
+            font-size: 1.2rem;
             margin-bottom: 10px;
         }
         
-        footer {
-            background-color: #333;
-            color: white;
-            text-align: center;
-            padding: 20px 0;
+        .contact-option p {
+            color: var(--text-secondary);
+            margin-bottom: 15px;
             font-size: 0.9rem;
         }
         
-        .contact {
-            margin-top: 10px;
+        .contact-link {
+            display: inline-block;
+            color: var(--accent-blue);
+            text-decoration: none;
+            font-weight: 500;
         }
         
-        .contact a {
-            color: #0078D4;
+        .contact-link:hover {
+            text-decoration: underline;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: #080a0e;
+            padding: 40px 0 20px;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .social-link {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--card-bg);
+            color: var(--text-primary);
+            border-radius: 50%;
             text-decoration: none;
-            margin: 0 10px;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+        
+        .social-link:hover {
+            transform: translateY(-3px);
+            background-color: var(--accent-blue);
             color: white;
+        }
+        
+        .copyright {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        /* Media queries */
+        @media (max-width: 992px) {
+            .about-container {
+                flex-direction: column;
+            }
+            
+            .about-image {
+                margin-bottom: 40px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .profile h1 {
+                font-size: 2.5rem;
+            }
+            
+            .section-title h2 {
+                font-size: 1.8rem;
+            }
+            
+            .projects-grid, .services-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .contact-option {
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
     <header>
         <div class="container">
-            <h1>Klaus Belegu</h1>
-            <p>Azure Cloud Solutions Portfolio</p>
+            <div class="profile">
+                <div class="profile-icon">
+                    <i class="fas fa-cloud"></i>
+                </div>
+                <h1>Klaus Belegu</h1>
+                <p>Proof of concept solutions | Exploring my hybrid homelab to it's fullest</p>
+                <div class="nav-links">
+                    <a href="#projects" class="nav-link">Projects</a>
+                    <a href="#services" class="nav-link">Azure Services</a>
+                    <a href="#about" class="nav-link">About Me</a>
+                    <a href="#contact" class="nav-link">Contact Me</a>
+                </div>
+            </div>
         </div>
     </header>
     
-    <div class="content">
+    <section id="projects">
         <div class="container">
-            <div class="coming-soon">
-                <h2>Welcome to My Azure Portfolio</h2>
-                <p>I'm building a collection of Azure cloud projects to showcase my skills and expertise.</p>
-                <p>Check back soon to see my latest work!</p>
+            <div class="section-title">
+                <h2>My Azure Projects</h2>
+                <p>Hands-on proof-of-concept projects I've built while exploring Azure cloud services.</p>
             </div>
             
-            <div class="tech-list">
-                <div class="tech-item">
-                    <h3>Azure App Service</h3>
-                    <p>Deploying scalable web applications with minimal configuration</p>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-header">
+                        <i class="fas fa-globe project-icon"></i>
+                        <span class="project-status status-completed">Completed</span>
+                    </div>
+                    <div class="project-body">
+                        <h3>Static Website with Azure Storage</h3>
+                        <p>Created a simple portfolio website (like this one) using Azure Storage static website hosting with custom domain and CDN integration via Github.</p>
+                        <div class="project-tech">
+                            <span class="tech-badge">Azure Storage</span>
+                            <span class="tech-badge">Azure CDN</span>
+                            <span class="tech-badge">Github</span>
+                            <span class="tech-badge">HTML/CSS</span>
+                        </div>
+                        <!--<a href="#" class="project-link">View Demo <i class="fas fa-arrow-right"></i></a>-->
+                    </div>
                 </div>
                 
-                <div class="tech-item">
-                    <h3>Azure Functions</h3>
-                    <p>Serverless compute solutions for event-driven applications</p>
+                <div class="project-card">
+                    <div class="project-header">
+                        <i class="fas fa-server project-icon"></i>
+                        <span class="project-status status-completed">Completed</span>
+                    </div>
+                    <div class="project-body">
+                        <h3>Virtual Machine Setup</h3>
+                        <p>Deployed numerous Windows & Linux Server VMs with proper networking configuration, backup policies, and security best practices.</p>
+                        <div class="project-tech">
+                            <span class="tech-badge">Azure VMs</span>
+                            <span class="tech-badge">Virtual Network</span>
+                            <span class="tech-badge">Linux</span>
+                            <span class="tech-badge">NSG</span>
+                        </div>
+                        <!--<a href="#" class="project-link">View Setup Guide <i class="fas fa-arrow-right"></i></a>-->
+                    </div>
                 </div>
                 
-                <div class="tech-item">
-                    <h3>Azure Storage</h3>
-                    <p>Secure cloud storage for structured and unstructured data</p>
+                <div class="project-card">
+                    <div class="project-header">
+                        <i class="fas fa-database project-icon"></i>
+                        <span class="project-status status-completed">Completed</span>
+                    </div>
+                    <div class="project-body">
+                        <h3>Web Applications with Databases</h3>
+                        <p>Deployed numerous open source applications using Azure Web Apps connected to an Azure SQL Database for storing and retrieving data.</p>
+                        <div class="project-tech">
+                            <span class="tech-badge">App Service</span>
+                            <span class="tech-badge">Azure SQL</span>
+                            <span class="tech-badge">ASP.NET Core</span>
+                        </div>
+                        <!--<a href="#" class="project-link">View Code <i class="fas fa-arrow-right"></i></a>-->
+                    </div>
                 </div>
                 
-                <div class="tech-item">
-                    <h3>Azure SQL Database</h3>
-                    <p>Managed relational database services for cloud applications</p>
+                <div class="project-card">
+                    <div class="project-header">
+                        <i class="fas fa-cloud-upload-alt project-icon"></i>
+                        <span class="project-status status-planned">Planned</span>
+                    </div>
+                    <div class="project-body">
+                        <h3>File Sharing Solution</h3>
+                        <p>Planning a secure file sharing solution for small businesses using Azure Storage and Azure AD authentication.</p>
+                        <div class="project-tech">
+                            <span class="tech-badge">Azure Storage</span>
+                            <span class="tech-badge">Azure AD</span>
+                            <span class="tech-badge">Azure Functions</span>
+                        </div>
+                        <!--<a href="#" class="project-link">View Concept <i class="fas fa-arrow-right"></i></a>-->
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-header">
+                        <i class="fas fa-bolt project-icon"></i>
+                        <span class="project-status status-completed">Completed</span>
+                    </div>
+                    <div class="project-body">
+                        <h3>Code that runs on demand</h3>
+                        <p>Azure Functions lets you write small pieces of code that run only when needed, without managing servers.</p>
+                        <div class="project-tech">
+                            <span class="tech-badge">Azure Functions</span>
+                            <span class="tech-badge">Blob Storage</span>
+                            <span class="tech-badge">PowerShell</span>                           
+                        </div>
+                        <!--<<a href="#" class="project-link">View Progress <i class="fas fa-arrow-right"></i></a>-->
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-header">
+                        <i class="fas fa-sitemap project-icon"></i>
+                        <span class="project-status status-completed">Completed</span>
+                    </div>
+                    <div class="project-body">
+                        <h3>Basic Azure Networking Lab</h3>
+                        <p>Built a simple networking environment with multiple subnets, network security groups, and a site-to-site VPN connection for testing.</p>
+                        <div class="project-tech">
+                            <span class="tech-badge">Virtual Network</span>
+                            <span class="tech-badge">NSGs</span>
+                            <span class="tech-badge">VPN Gateway</span>
+                        </div>
+                        <!--<<a href="#" class="project-link">View Architecture <i class="fas fa-arrow-right"></i></a>-->
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
+    
+    <section id="services">
+        <div class="container">
+            <div class="section-title">
+                <h2>Azure Services I Work With</h2>
+                <p>Core Azure technologies I've been exploring and implementing.</p>
+            </div>
+            
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <h3>Azure App Service</h3>
+                    <p>Hosting web applications and APIs without managing infrastructure.</p>
+                    <ul class="service-features">
+                        <li>Deployed simple websites</li>
+                        <li>Set up continuous deployment</li>
+                        <li>Configured custom domains</li>
+                        <li>Applied app settings and configs</li>
+                    </ul>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>Azure Functions</h3>
+                    <p>Building serverless applications that respond to events.</p>
+                    <ul class="service-features">
+                        <li>Created HTTP-triggered functions</li>
+                        <li>Set up timer functions</li>
+                        <li>Integrated with storage events</li>
+                        <li>Explored consumption plan scaling</li>
+                    </ul>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <h3>Azure Storage</h3>
+                    <p>Using cloud storage solutions for various data types.</p>
+                    <ul class="service-features">
+                        <li>Set up blob containers</li>
+                        <li>Configured static website hosting</li>
+                        <li>Used file shares for applications</li>
+                        <li>Created shared access signatures</li>
+                    </ul>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-table"></i>
+                    </div>
+                    <h3>Azure SQL Database</h3>
+                    <p>Working with managed relational databases in the cloud.</p>
+                    <ul class="service-features">
+                        <li>Created basic databases</li>
+                        <li>Set up firewall rules</li>
+                        <li>Connected web applications</li>
+                        <li>Performed basic backups</li>
+                    </ul>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-network-wired"></i>
+                    </div>
+                    <h3>Azure Networking</h3>
+                    <p>Building virtual networks for secure cloud infrastructure.</p>
+                    <ul class="service-features">
+                        <li>Created virtual networks</li>
+                        <li>Configured subnets and NSGs</li>
+                        <li>Set up basic VPN connections</li>
+                        <li>Managed private endpoints</li>
+                    </ul>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <h3>Azure Security</h3>
+                    <p>Implementing basic security practices for Azure resources.</p>
+                    <ul class="service-features">
+                        <li>Set up Microsoft Entra ID</li>
+                        <li>Configured RBAC permissions</li>
+                        <li>Implemented MFA</li>
+                        <li>Used Key Vault for secrets</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="about">
+        <div class="container">
+            <div class="section-title">
+                <h2>About Me</h2>
+                <p>A bit about my background and homelab journey.</p>
+            </div>
+            
+            <div class="about-container">
+                <div class="about-image">
+                    <div class="about-icon">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+                <div class="about-content">
+                    <h3>Hi, I'm Klaus!</h3>
+                    <p>I'm an IT professional working at an MSP, where I love helping businesses leverage technologies to solve real-world challenges. My focus lies in improving ineffecient processes via cloud or automation. I also have a heavy passion in properly configuring and deploying cloud software/systems.</p>
+                    <p>My main skills include the full Microsoft Stack, PowerShell/Scripting, Cloud software/systems, Azure, Windows/Linux servers, RMM solutions and more.</p>
+                    <p>This portfolio showcases some of the hybrid projects I've been working on as I explore different services and capabilities. I'm passionate about creating efficient, scalable, and secure solutions.</p>
+                    <p>My home lab consists of a Dell PowerEdge running Proxmox with numerous LXC containers and Linux VMs (some windows VM for testing).</p>
+                    <p>My on-prem solution is behind my Procteli 4-port Vault running OPNSense, configured with proper network segmentation and inbound/outbound rules.</p>
+                    <p>I have implemented an Azure VPN gateway to connect up to my Azure home lab but generally is not in play due to high Azure costs.</p>
+                    <p>When I'm not working with my homelab, I enjoy staying up-to-date with the latest tech trends and finding open-source projects to explore.</p>
+                    
+                    <div class="skills-container">
+                        <h4>My Skills & Interests</h4>
+                        <div class="skills-grid">
+                            <span class="skill-badge">Azure Cloud</span>
+                            <span class="skill-badge">Infrastructure</span>
+                            <span class="skill-badge">Web Development</span>
+                            <span class="skill-badge">Microsoft Stack with a heavy focus on Intune and Entra</span>
+                            <span class="skill-badge">Cloud Security</span>
+                            <span class="skill-badge">Cloud & Open Source Software</span>
+                            <span class="skill-badge">Automation</span>
+                            <span class="skill-badge">System Administration</span>
+                            <span class="skill-badge">PowerShell</span>
+                            <span class="skill-badge">Linux</span>
+                            <span class="skill-badge">Networking</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="contact">
+        <div class="container">
+            <div class="section-title">
+                <h2>Get In Touch</h2>
+                <p>Let's connect!</p>
+            </div>
+            
+            <div class="contact-options">
+                <div class="contact-option">
+                    <div class="contact-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h3>Email</h3>
+                    <p>Feel free to reach out directly via email.</p>
+                    <a href="mailto:kb@klausbelegu.com" class="contact-link">kb@klausbelegu.com</a>
+                </div>
+                
+                <div class="contact-option">
+                    <div class="contact-icon">
+                        <i class="fab fa-linkedin"></i>
+                    </div>
+                    <h3>LinkedIn</h3>
+                    <p>Connect with me on LinkedIn.</p>
+                    <a href="https://linkedin.com/in/klaus-belegu" target="_blank" class="contact-link">linkedin.com/in/klaus-belegu</a>
+                </div>
+                
+                <div class="contact-option">
+                    <div class="contact-icon">
+                        <i class="fab fa-github"></i>
+                    </div>
+                    <h3>GitHub</h3>
+                    <p>Check out my code repositories.(including this website)</p>
+                    <a href="https://github.com/BeleguKlaus" target="_blank" class="contact-link">github.com/BeleguKlaus</a>
+                </div>
+            </div>
+        </div>
+    </section>
     
     <footer>
         <div class="container">
-            <p>&copy; 2025 Klaus Belegu. All rights reserved.</p>
-            <div class="contact">
-                <a href="https://github.com/BeleguKlaus" target="_blank">GitHub</a>
-                <a href="https://linkedin.com/in/klaus-belegu" target="_blank">LinkedIn</a>
-                <a href="mailto:kb@klausbelegu.com">kb@klausbelegu.com</a>
+            <div class="social-links">
+                <a href="https://github.com/BeleguKlaus" target="_blank" class="social-link"><i class="fab fa-github"></i></a>
+                <a href="https://linkedin.com/in/klaus-belegu" target="_blank" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                <a href="mailto:kb@klausbelegu.com" class="social-link"><i class="fas fa-envelope"></i></a>
+                <!--<a href="#" class="social-link"><i class="fab fa-twitter"></i></a>-->
             </div>
+            <p class="copyright">&copy; 2025 Klaus Belegu. All rights reserved.</p>
         </div>
     </footer>
 </body>
