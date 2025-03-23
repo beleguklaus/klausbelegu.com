@@ -1,0 +1,14 @@
+{
+  "name": "smtp-auth-tester",
+  "version": "1.0.0",
+  "description": "SMTP Auth Tester Function",
+  "main": "src/functions/*.js",
+  "scripts": {
+    "start": "func start",
+    "test": "echo \"No tests yet...\""
+  },
+  "dependencies": {
+    "nodemailer": "^6.9.1",
+    "@azure/functions": "^4.0.0"
+  }
+}
