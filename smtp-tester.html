@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMTP Auth Tester - Klaus Belegu</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-bg: #161b22;
+            --accent-blue: #0078d4;
+            --accent-purple: #7a43b5;
+            --text-primary: #e6edf3;
+            --text-secondary: #8b949e;
+            --border-color: #30363d;
+            --success-bg: rgba(46, 204, 64, 0.1);
+            --success-border: #2ECC40;
+            --error-bg: rgba(209, 52, 56, 0.1);
+            --error-border: #D13438;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* Header */
+        header {
+            padding: 120px 0 80px;
+            background: linear-gradient(to bottom, #0a0c10, var(--bg-color));
+            text-align: center;
+        }
+        
+        .profile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .profile-icon {
+            width: 160px;
+            height: 160px;
+            background-color: var(--card-bg);
+            border-radius: 50%;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--accent-blue);
+            box-shadow: 0 10px 25px rgba(0, 120, 212, 0.2);
+        }
+        
+        .profile-icon i {
+            font-size: 64px;
+            color: var(--accent-blue);
+        }
+        
+        .profile h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        .profile p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            max-width: 700px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-primary);
+            background-color: var(--card-bg);
+            padding: 10px 20px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 120, 212, 0.1);
+        }
+        
+        /* Section styling */
+        section {
+            padding: 80px 0;
+        }
+        
+        section:nth-child(odd) {
+            background-color: var(--bg-color);
+        }
+        
+        section:nth-child(even) {
+            background-color: #0a0d14;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .section-title h2 {
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            display: inline-block;
+            position: relative;
+        }
+        
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(to right, var(--accent-blue), var(--accent-purple));
+            border-radius: 2px;
+        }
+        
+        .section-title p {
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        /* SMTP Tester Form */
+        .form-container {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 25px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 1rem;
+            background-color: #1c2128;
+            color: var(--text-primary);
+            transition: border-color 0.3s ease;
+        }
+        
+        input:focus, select:focus {
+            border-color: var(--accent-blue);
+            outline: none;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+        }
+        
+        .checkbox-group input {
+            width: auto;
+            margin-right: 10px;
+        }
+        
+        button {
+            background-color: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            margin-top: 10px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        
+        button:hover {
+            background-color: #106ebe;
+            transform: translateY(-2px);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .common-configs {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .common-configs p {
+            margin-bottom: 15px;
+            color: var(--text-secondary);
+        }
+        
+        .preset-button {
+            background-color: rgba(0, 120, 212, 0.1);
+            color: var(--text-primary);
+            border: 1px solid rgba(0, 120, 212, 0.3);
+            margin-right: 10px;
+            margin-bottom: 10px;
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        
+        .preset-button:hover {
+            background-color: rgba(0, 120, 212, 0.2);
+            border-color: var(--accent-blue);
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .loading i {
+            color: var(--accent-blue);
+            font-size: 2rem;
+        }
+        
+        .loading p {
+            margin-top: 15px;
+            color: var(--text-secondary);
+        }
+        
+        .result-container {
+            display: none;
+            margin-top: 30px;
+        }
+        
+        .success {
+            background-color: var(--success-bg);
+            border-left: 4px solid var(--success-border);
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+        
+        .error {
+            background-color: var(--error-bg);
+            border-left: 4px solid var(--error-border);
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+        
+        #resultDetails {
+            background-color: #1c2128;
+            border-radius: 6px;
+            padding: 20px;
+            margin-top: 20px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+        
+        /* Footer */
+        footer {
+            background-color: #080a0e;
+            padding: 40px 0 20px;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .social-link {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--card-bg);
+            color: var(--text-primary);
+            border-radius: 50%;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+        
+        .social-link:hover {
+            transform: translateY(-3px);
+            background-color: var(--accent-blue);
+            color: white;
+        }
+        
+        .copyright {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        /* Media queries */
+        @media (max-width: 768px) {
+            .section-title h2 {
+                font-size: 1.8rem;
+            }
+            
+            .preset-button {
+                margin-bottom: 10px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="profile">
+                <div class="profile-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <h1>SMTP Auth Tester</h1>
+                <p>Test email credentials to diagnose printer, scanner, or application connectivity issues</p>
+                <div class="nav-links">
+                    <a href="/" class="nav-link">Back to Portfolio</a>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <section>
+        <div class="container">
+            <div class="section-title">
+                <h2>Email Authentication Tester</h2>
+                <p>Verify SMTP credentials and test email delivery with this simple tool</p>
+            </div>
+            
+            <div class="form-container">
+                <div class="form-group">
+                    <label for="smtpServer">SMTP Server</label>
+                    <input type="text" id="smtpServer" placeholder="e.g., smtp.office365.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="port">Port</label>
+                    <select id="port">
+                        <option value="587">587 (STARTTLS)</option>
+                        <option value="25">25 (SMTP)</option>
+                        <option value="465">465 (SSL/TLS)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="username">Username/Email</label>
+                    <input type="text" id="username" placeholder="e.g., user@domain.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password">
+                </div>
+                
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="useTLS" checked>
+                    <label for="useTLS">Use TLS (recommended)</label>
+                </div>
+                
+                <div class="form-group">
+                    <label for="testEmailTo">Send Test Email To (optional)</label>
+                    <input type="email" id="testEmailTo" placeholder="e.g., recipient@domain.com">
+                </div>
+                
+                <button id="testButton">Test Authentication</button>
+                
+                <div class="common-configs">
+                    <p><strong>Common SMTP Configurations:</strong></p>
+                    <button class="preset-button" data-server="smtp.office365.com" data-port="587">Microsoft 365</button>
+                    <button class="preset-button" data-server="smtp.gmail.com" data-port="587">Gmail</button>
+                    <button class="preset-button" data-server="smtp-mail.outlook.com" data-port="587">Outlook.com</button>
+                    <button class="preset-button" data-server="smtp.mail.yahoo.com" data-port="587">Yahoo Mail</button>
+                </div>
+            </div>
+            
+            <div class="loading" id="loadingIndicator">
+                <i class="fas fa-circle-notch fa-spin"></i>
+                <p>Testing SMTP authentication...</p>
+            </div>
+            
+            <div class="result-container" id="resultContainer">
+                <div id="resultStatus"></div>
+                <div id="resultDetails"></div>
+            </div>
+        </div>
+    </section>
+    
+    <footer>
+        <div class="container">
+            <div class="social-links">
+                <a href="https://github.com/BeleguKlaus" target="_blank" class="social-link"><i class="fab fa-github"></i></a>
+                <a href="https://linkedin.com/in/klaus-belegu" target="_blank" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                <a href="mailto:kb@klausbelegu.com" class="social-link"><i class="fas fa-envelope"></i></a>
+            </div>
+            <p class="copyright">&copy; 2025 Klaus Belegu. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const testButton = document.getElementById('testButton');
+            const resultContainer = document.getElementById('resultContainer');
+            const resultStatus = document.getElementById('resultStatus');
+            const resultDetails = document.getElementById('resultDetails');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            
+            // Add event listeners for preset buttons
+            document.querySelectorAll('.preset-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    document.getElementById('smtpServer').value = this.getAttribute('data-server');
+                    document.getElementById('port').value = this.getAttribute('data-port');
+                });
+            });
+            
+            testButton.addEventListener('click', async function() {
+                // Get form values
+                const smtpServer = document.getElementById('smtpServer').value;
+                const port = document.getElementById('port').value;
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                const useTLS = document.getElementById('useTLS').checked;
+                const testEmailTo = document.getElementById('testEmailTo').value;
+                
+                // Validate required fields
+                if (!smtpServer || !port || !username || !password) {
+                    alert('Please fill in all required fields');
+                    return;
+                }
+                
+                // Show loading indicator
+                loadingIndicator.style.display = 'block';
+                resultContainer.style.display = 'none';
+                
+                try {
+                    // Call your Azure Function
+                    const response = await fetch('https://smtp-auth-tester-kb.azurewebsites.net/api/SmtpAuthTester?code=69PInM94fx-IWIhwkj4UQUPi1JiEwEOVJA5bdA1fqepvAzFubPCDAw==', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            smtpServer,
+                            port,
+                            username,
+                            password,
+                            useTLS,
+                            testEmailTo
+                        })
+                    });
+                    
+                    const result = await response.json();
+                    
+                    // Hide loading indicator
+                    loadingIndicator.style.display = 'none';
+                    
+                    // Show result
+                    if (result.status === 'success') {
+                        resultStatus.className = 'success';
+                        resultStatus.innerHTML = '<h3>✓ Authentication Successful</h3><p>SMTP credentials are valid and working correctly.</p>';
+                        
+                        if (result.emailTest && result.emailTest.success) {
+                            resultStatus.innerHTML += '<p>Test email was sent successfully.</p>';
+                        } else if (result.emailTest && !result.emailTest.success) {
+                            resultStatus.innerHTML += `<p>Authentication succeeded, but test email failed: ${result.emailTest.error}</p>`;
+                        }
+                    } else {
+                        resultStatus.className = 'error';
+                        resultStatus.innerHTML = `<h3>✕ Authentication Failed</h3><p>${result.message || 'Unable to authenticate with the provided credentials.'}</p>`;
+                        
+                        if (result.errorDetails) {
+                            resultStatus.innerHTML += `<p>Error details: ${result.errorDetails}</p>`;
+                        }
+                    }
+                    
+                    // Show detailed result
+                    resultDetails.textContent = JSON.stringify(result, null, 2);
+                    resultContainer.style.display = 'block';
+                    
+                } catch (error) {
+                    loadingIndicator.style.display = 'none';
+                    resultStatus.className = 'error';
+                    resultStatus.innerHTML = '<h3>✕ Error</h3><p>An error occurred while testing.</p>';
+                    resultDetails.textContent = error.toString();
+                    resultContainer.style.display = 'block';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
