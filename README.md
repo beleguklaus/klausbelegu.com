@@ -1,2 +1,2 @@
 # klausbelegu.com
-Portfolio showcase, focused around Azure services. 
+Portfolio showcase, focused around my hybrid homelab.
