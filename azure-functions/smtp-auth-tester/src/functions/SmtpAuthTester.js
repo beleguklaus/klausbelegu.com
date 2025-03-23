@@ -3,11 +3,11 @@ const nodemailer = require('nodemailer');
 
 app.http('SmtpAuthTester', {
     methods: ['GET', 'POST'],
-    authLevel: 'function', // Keep this as function since you're using a key
+    authLevel: 'function',
     handler: async (request, context) => {
         context.log('SMTP Auth Tester function processing request.');
-
-        // Handle GET requests with a simple status response
+        
+        // Handle GET requests
         if (request.method === 'GET') {
             return {
                 status: 200,
@@ -20,8 +20,8 @@ app.http('SmtpAuthTester', {
                 })
             };
         }
-
-        // Try to parse request body with proper error handling
+        
+        // Parse request body
         let body;
         try {
             const bodyText = await request.text();
@@ -55,28 +55,82 @@ app.http('SmtpAuthTester', {
                 })
             };
         }
-
-        // Rest of your existing code here...
-        // Make sure every response includes proper headers and valid JSON
-
-        // The existing function implementation...
-        // At the end of the function, add these lines:
         
-        // Add proper error handling for the nodemailer operations
+        // Extract parameters from request
+        const smtpServer = body.smtpServer;
+        const port = parseInt(body.port);
+        const username = body.username;
+        const password = body.password;
+        const useTLS = body.useTLS !== false;
+        const testEmailTo = body.testEmailTo || null;
+        
         try {
-            // Your nodemailer code...
+            // Configure Nodemailer transporter
+            const transporter = nodemailer.createTransport({
+                host: smtpServer,
+                port: port,
+                secure: port === 465,
+                auth: {
+                    user: username,
+                    pass: password
+                },
+                tls: {
+                    rejectUnauthorized: false
+                }
+            });
             
-            // Make sure to return a properly formatted response
+            // Test the connection
+            const verifyResult = await transporter.verify();
+            
+            // Initialize result object
+            const result = {
+                status: "success",
+                connectionTest: {
+                    success: true,
+                    timestamp: new Date().toISOString(),
+                    server: smtpServer,
+                    port: port,
+                    auth: "Authentication successful",
+                    username: username
+                }
+            };
+            
+            // Send test email if address provided
+            if (testEmailTo) {
+                try {
+                    const info = await transporter.sendMail({
+                        from: username,
+                        to: testEmailTo,
+                        subject: 'SMTP Auth Test',
+                        text: `This is a test email sent at ${new Date().toISOString()} to verify SMTP functionality.`,
+                        html: `<p>This is a test email sent at ${new Date().toISOString()} to verify SMTP functionality.</p>
+                              <p>SMTP Server: ${smtpServer}<br>
+                              Port: ${port}<br>
+                              Username: ${username}</p>`
+                    });
+                    
+                    result.emailTest = {
+                        success: true,
+                        messageId: info.messageId,
+                        recipient: testEmailTo,
+                        timestamp: new Date().toISOString()
+                    };
+                } catch (emailError) {
+                    result.emailTest = {
+                        success: false,
+                        error: emailError.message,
+                        recipient: testEmailTo,
+                        timestamp: new Date().toISOString()
+                    };
+                }
+            }
+            
             return {
                 status: 200,
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    status: "success",
-                    message: "SMTP test completed successfully"
-                    // Include other response data here
-                })
+                body: JSON.stringify(result)
             };
         } catch (error) {
             context.log('Error in SMTP test:', error);
@@ -87,8 +141,12 @@ app.http('SmtpAuthTester', {
                 },
                 body: JSON.stringify({
                     status: "error",
-                    message: "Error during SMTP test",
-                    error: error.message
+                    message: "SMTP authentication failed",
+                    errorDetails: error.message,
+                    server: smtpServer,
+                    port: port,
+                    username: username,
+                    timestamp: new Date().toISOString()
                 })
             };
         }
