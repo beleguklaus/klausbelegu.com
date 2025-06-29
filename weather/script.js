@@ -1,6 +1,6 @@
 class WeatherDashboard {
     constructor() {
-        this.apiKey = 'a765c19ed6636ee389e84bd7697b513b'; // Users need to add their API key here
+        this.apiKey = window.WEATHER_API_KEY || ''; // API key injected from server
         this.baseUrl = 'https://api.openweathermap.org/data/2.5';
         this.currentWeatherUrl = `${this.baseUrl}/weather`;
         this.forecastUrl = `${this.baseUrl}/forecast`;
