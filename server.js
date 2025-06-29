@@ -8,33 +8,61 @@ const PORT = process.env.PORT || 8080;
 // Serve static files from root
 app.use(express.static(__dirname));
 
-// Weather dashboard route - serve the weather app with API key injection
+// Weather dashboard route - serve the weather app
 app.get('/weather', (req, res) => {
-  const fs = require('fs');
-  const weatherIndexPath = path.join(__dirname, 'weather', 'index.html');
+  res.sendFile(path.join(__dirname, 'weather', 'index.html'));
+});
+
+// API proxy for weather data - keeps API key secure
+app.get('/api/weather/current/:city', async (req, res) => {
+  const apiKey = process.env.OPENWEATHER_API_KEY;
+  if (!apiKey) {
+    return res.status(500).json({ error: 'API key not configured' });
+  }
   
   try {
-    // Check if file exists first
-    if (!fs.existsSync(weatherIndexPath)) {
-      console.error('Weather index.html not found at:', weatherIndexPath);
-      return res.status(404).send('Weather dashboard not found');
-    }
-    
-    const weatherHtml = fs.readFileSync(weatherIndexPath, 'utf8');
-    
-    // Inject API key into the HTML
-    const apiKey = process.env.OPENWEATHER_API_KEY || '';
-    console.log('Injecting API key:', apiKey ? 'YES' : 'NO');
-    const modifiedHtml = weatherHtml.replace(
-      '<script src="script.js"></script>',
-      `<script>window.WEATHER_API_KEY = '${apiKey}';</script>\n    <script src="script.js"></script>`
-    );
-    console.log('HTML replacement successful:', modifiedHtml.includes('window.WEATHER_API_KEY'));
-    
-    res.send(modifiedHtml);
+    const city = req.params.city;
+    const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`);
+    const data = await response.json();
+    res.json(data);
   } catch (error) {
-    console.error('Error serving weather dashboard:', error);
-    res.status(500).send('Error loading weather dashboard');
+    res.status(500).json({ error: 'Failed to fetch weather data' });
+  }
+});
+
+app.get('/api/weather/forecast/:city', async (req, res) => {
+  const apiKey = process.env.OPENWEATHER_API_KEY;
+  if (!apiKey) {
+    return res.status(500).json({ error: 'API key not configured' });
+  }
+  
+  try {
+    const city = req.params.city;
+    const response = await fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}&units=metric`);
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch forecast data' });
+  }
+});
+
+app.get('/api/weather/coords', async (req, res) => {
+  const apiKey = process.env.OPENWEATHER_API_KEY;
+  if (!apiKey) {
+    return res.status(500).json({ error: 'API key not configured' });
+  }
+  
+  try {
+    const { lat, lon } = req.query;
+    const currentResponse = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`);
+    const forecastResponse = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`);
+    
+    const currentData = await currentResponse.json();
+    const forecastData = await forecastResponse.json();
+    
+    res.json({ current: currentData, forecast: forecastData });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch weather data' });
   }
 });
 

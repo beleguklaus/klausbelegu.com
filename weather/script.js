@@ -1,9 +1,10 @@
 class WeatherDashboard {
     constructor() {
-        this.apiKey = window.WEATHER_API_KEY || ''; // API key injected from server
-        this.baseUrl = 'https://api.openweathermap.org/data/2.5';
-        this.currentWeatherUrl = `${this.baseUrl}/weather`;
+        // Use our secure server-side API endpoints
+        this.baseUrl = '/api/weather';
+        this.currentWeatherUrl = `${this.baseUrl}/current`;
         this.forecastUrl = `${this.baseUrl}/forecast`;
+        this.coordsUrl = `${this.baseUrl}/coords`;
         
         this.settings = this.loadSettings();
         this.initializeElements();
@@ -82,17 +83,12 @@ class WeatherDashboard {
     }
 
     async fetchWeatherData(city) {
-        if (!this.apiKey) {
-            this.showDemoData(city);
-            return;
-        }
-
         this.showLoading();
         
         try {
             const [currentResponse, forecastResponse] = await Promise.all([
-                fetch(`${this.currentWeatherUrl}?q=${city}&appid=${this.apiKey}&units=metric`),
-                fetch(`${this.forecastUrl}?q=${city}&appid=${this.apiKey}&units=metric`)
+                fetch(`${this.currentWeatherUrl}/${city}`),
+                fetch(`${this.forecastUrl}/${city}`)
             ]);
 
             if (!currentResponse.ok || !forecastResponse.ok) {
@@ -101,6 +97,10 @@ class WeatherDashboard {
 
             const currentData = await currentResponse.json();
             const forecastData = await forecastResponse.json();
+
+            if (currentData.error || forecastData.error) {
+                throw new Error(currentData.error || forecastData.error);
+            }
 
             this.updateCurrentWeather(currentData);
             this.updateForecast(forecastData);
@@ -111,28 +111,23 @@ class WeatherDashboard {
     }
 
     async fetchWeatherByCoords(lat, lon) {
-        if (!this.apiKey) {
-            this.showDemoData('Your Location');
-            return;
-        }
-
         this.showLoading();
         
         try {
-            const [currentResponse, forecastResponse] = await Promise.all([
-                fetch(`${this.currentWeatherUrl}?lat=${lat}&lon=${lon}&appid=${this.apiKey}&units=metric`),
-                fetch(`${this.forecastUrl}?lat=${lat}&lon=${lon}&appid=${this.apiKey}&units=metric`)
-            ]);
+            const response = await fetch(`${this.coordsUrl}?lat=${lat}&lon=${lon}`);
 
-            if (!currentResponse.ok || !forecastResponse.ok) {
+            if (!response.ok) {
                 throw new Error('Unable to fetch weather data');
             }
 
-            const currentData = await currentResponse.json();
-            const forecastData = await forecastResponse.json();
+            const data = await response.json();
 
-            this.updateCurrentWeather(currentData);
-            this.updateForecast(forecastData);
+            if (data.error) {
+                throw new Error(data.error);
+            }
+
+            this.updateCurrentWeather(data.current);
+            this.updateForecast(data.forecast);
             this.hideLoading();
         } catch (error) {
             this.showError(error.message);
@@ -192,12 +187,6 @@ class WeatherDashboard {
         this.updateCurrentWeather(demoCurrentData);
         this.updateForecast(demoForecastData);
         this.hideLoading();
-        
-        if (!this.apiKey) {
-            setTimeout(() => {
-                this.showError('Demo mode: Add your OpenWeatherMap API key to script.js for live data');
-            }, 2000);
-        }
     }
 
     updateCurrentWeather(data) {
