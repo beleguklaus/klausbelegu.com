@@ -95,8 +95,17 @@ class WeatherDashboard {
                 throw new Error('City not found');
             }
 
-            const currentData = await currentResponse.json();
-            const forecastData = await forecastResponse.json();
+            const currentText = await currentResponse.text();
+            const forecastText = await forecastResponse.text();
+            
+            let currentData, forecastData;
+            try {
+                currentData = JSON.parse(currentText);
+                forecastData = JSON.parse(forecastText);
+            } catch (parseError) {
+                console.error('Failed to parse response:', { currentText, forecastText });
+                throw new Error('Invalid response from server');
+            }
 
             if (currentData.error || forecastData.error) {
                 throw new Error(currentData.error || forecastData.error);
@@ -120,7 +129,14 @@ class WeatherDashboard {
                 throw new Error('Unable to fetch weather data');
             }
 
-            const data = await response.json();
+            const responseText = await response.text();
+            let data;
+            try {
+                data = JSON.parse(responseText);
+            } catch (parseError) {
+                console.error('Failed to parse coords response:', responseText);
+                throw new Error('Invalid response from server');
+            }
 
             if (data.error) {
                 throw new Error(data.error);
