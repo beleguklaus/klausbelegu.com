@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="logo">
+                <i class="fas fa-cloud-sun"></i>
+                Weather Dashboard
+            </h1>
+            <div class="header-controls">
+                <div class="search-container">
+                    <input type="text" id="cityInput" placeholder="Enter city name..." class="search-input">
+                    <button id="searchBtn" class="search-btn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                <div class="theme-toggle" id="themeToggle">
+                    <span class="theme-toggle-label">Dark Mode</span>
+                    <div class="theme-toggle-switch">
+                        <div class="theme-toggle-slider">
+                            <i class="theme-toggle-icon fas fa-sun"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="loading-spinner" id="loadingSpinner">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Loading weather data...</p>
+            </div>
+
+            <div class="error-message" id="errorMessage">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p id="errorText">Unable to fetch weather data</p>
+            </div>
+
+            <section class="current-weather" id="currentWeather">
+                <div class="current-weather-main">
+                    <div class="weather-info">
+                        <h2 class="city-name" id="cityName">New York</h2>
+                        <p class="weather-date" id="weatherDate">Monday, June 29, 2025</p>
+                        <div class="temperature-display">
+                            <span class="temperature" id="currentTemp">22°</span>
+                            <div class="weather-icon-main">
+                                <i class="fas fa-sun" id="mainWeatherIcon"></i>
+                            </div>
+                        </div>
+                        <p class="weather-description" id="weatherDescription">Sunny</p>
+                    </div>
+                </div>
+                
+                <div class="weather-details">
+                    <div class="detail-item">
+                        <i class="fas fa-eye"></i>
+                        <span class="detail-label">Visibility</span>
+                        <span class="detail-value" id="visibility">10 km</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-tint"></i>
+                        <span class="detail-label">Humidity</span>
+                        <span class="detail-value" id="humidity">65%</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-wind"></i>
+                        <span class="detail-label">Wind</span>
+                        <span class="detail-value" id="windSpeed">12 km/h</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-thermometer-half"></i>
+                        <span class="detail-label">Feels like</span>
+                        <span class="detail-value" id="feelsLike">25°</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-compress-arrows-alt"></i>
+                        <span class="detail-label">Pressure</span>
+                        <span class="detail-value" id="pressure">1013 hPa</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-sun"></i>
+                        <span class="detail-label">UV Index</span>
+                        <span class="detail-value" id="uvIndex">5</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="forecast-section">
+                <h3 class="section-title">5-Day Forecast</h3>
+                <div class="forecast-container" id="forecastContainer">
+                    <!-- Forecast items will be dynamically generated -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
