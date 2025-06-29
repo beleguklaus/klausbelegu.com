@@ -13,10 +13,6 @@ app.get('/weather', (req, res) => {
   res.sendFile(path.join(__dirname, 'weather', 'index.html'));
 });
 
-// Intune App packager route
-app.get('/intuneapp', (req, res) => {
-  res.sendFile(path.join(__dirname, 'intuneapp', 'index.html'));
-});
 
 // API proxy for weather data - keeps API key secure
 app.get('/api/weather/current/:city', async (req, res) => {
@@ -71,6 +67,7 @@ app.get('/api/weather/coords', async (req, res) => {
   }
 });
 
+
 // Debug route to check files and environment
 app.get('/debug/files', (req, res) => {
   const fs = require('fs');
@@ -98,8 +95,6 @@ app.get('/debug/files', (req, res) => {
 // Serve weather static files (CSS, JS, etc.)
 app.use('/weather', express.static(path.join(__dirname, 'weather')));
 
-// Serve intuneapp static files
-app.use('/intuneapp', express.static(path.join(__dirname, 'intuneapp')));
 
 // Route all other requests to main index.html (catch-all for SPA)
 app.get('*', (req, res) => {
