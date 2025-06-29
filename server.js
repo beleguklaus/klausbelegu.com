@@ -24,10 +24,12 @@ app.get('/weather', (req, res) => {
     
     // Inject API key into the HTML
     const apiKey = process.env.OPENWEATHER_API_KEY || '';
+    console.log('Injecting API key:', apiKey ? 'YES' : 'NO');
     const modifiedHtml = weatherHtml.replace(
       '<script src="script.js"></script>',
-      `<script>window.WEATHER_API_KEY = '${apiKey}';</script><script src="script.js"></script>`
+      `<script>window.WEATHER_API_KEY = '${apiKey}';</script>\n    <script src="script.js"></script>`
     );
+    console.log('HTML replacement successful:', modifiedHtml.includes('window.WEATHER_API_KEY'));
     
     res.send(modifiedHtml);
   } catch (error) {
