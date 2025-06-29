@@ -36,7 +36,7 @@ app.get('/weather', (req, res) => {
   }
 });
 
-// Debug route to check files
+// Debug route to check files and environment
 app.get('/debug/files', (req, res) => {
   const fs = require('fs');
   try {
@@ -48,7 +48,12 @@ app.get('/debug/files', (req, res) => {
       currentDir: __dirname,
       rootFiles: files,
       weatherDirExists: weatherExists,
-      weatherFiles: weatherFiles
+      weatherFiles: weatherFiles,
+      envVars: {
+        OPENWEATHER_API_KEY: process.env.OPENWEATHER_API_KEY ? 'SET (' + process.env.OPENWEATHER_API_KEY.substring(0, 8) + '...)' : 'NOT SET',
+        NODE_ENV: process.env.NODE_ENV || 'not set',
+        PORT: process.env.PORT || 'not set'
+      }
     });
   } catch (error) {
     res.json({ error: error.message, currentDir: __dirname });
