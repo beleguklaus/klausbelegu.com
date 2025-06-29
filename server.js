@@ -11,16 +11,48 @@ app.use(express.static(__dirname));
 // Weather dashboard route - serve the weather app with API key injection
 app.get('/weather', (req, res) => {
   const fs = require('fs');
-  const weatherHtml = fs.readFileSync(path.join(__dirname, 'weather', 'index.html'), 'utf8');
+  const weatherIndexPath = path.join(__dirname, 'weather', 'index.html');
   
-  // Inject API key into the HTML
-  const apiKey = process.env.OPENWEATHER_API_KEY || '';
-  const modifiedHtml = weatherHtml.replace(
-    '<script src="script.js"></script>',
-    `<script>window.WEATHER_API_KEY = '${apiKey}';</script><script src="script.js"></script>`
-  );
-  
-  res.send(modifiedHtml);
+  try {
+    // Check if file exists first
+    if (!fs.existsSync(weatherIndexPath)) {
+      console.error('Weather index.html not found at:', weatherIndexPath);
+      return res.status(404).send('Weather dashboard not found');
+    }
+    
+    const weatherHtml = fs.readFileSync(weatherIndexPath, 'utf8');
+    
+    // Inject API key into the HTML
+    const apiKey = process.env.OPENWEATHER_API_KEY || '';
+    const modifiedHtml = weatherHtml.replace(
+      '<script src="script.js"></script>',
+      `<script>window.WEATHER_API_KEY = '${apiKey}';</script><script src="script.js"></script>`
+    );
+    
+    res.send(modifiedHtml);
+  } catch (error) {
+    console.error('Error serving weather dashboard:', error);
+    res.status(500).send('Error loading weather dashboard');
+  }
+});
+
+// Debug route to check files
+app.get('/debug/files', (req, res) => {
+  const fs = require('fs');
+  try {
+    const files = fs.readdirSync(__dirname);
+    const weatherExists = fs.existsSync(path.join(__dirname, 'weather'));
+    const weatherFiles = weatherExists ? fs.readdirSync(path.join(__dirname, 'weather')) : [];
+    
+    res.json({
+      currentDir: __dirname,
+      rootFiles: files,
+      weatherDirExists: weatherExists,
+      weatherFiles: weatherFiles
+    });
+  } catch (error) {
+    res.json({ error: error.message, currentDir: __dirname });
+  }
 });
 
 // Serve weather static files (CSS, JS, etc.)
