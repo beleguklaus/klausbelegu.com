@@ -154,8 +154,8 @@ class WeatherDashboard {
         const demoCurrentData = {
             name: city,
             main: {
-                temp: 22,
-                feels_like: 25,
+                temp: 72,
+                feels_like: 77,
                 humidity: 65,
                 pressure: 1013
             },
@@ -165,7 +165,7 @@ class WeatherDashboard {
                 icon: '01d'
             }],
             wind: {
-                speed: 3.5
+                speed: 8
             },
             visibility: 10000
         };
@@ -174,27 +174,27 @@ class WeatherDashboard {
             list: [
                 {
                     dt: Date.now() / 1000 + 86400,
-                    main: { temp_max: 25, temp_min: 18 },
+                    main: { temp_max: 77, temp_min: 64 },
                     weather: [{ main: 'Sunny', description: 'sunny', icon: '01d' }]
                 },
                 {
                     dt: Date.now() / 1000 + 172800,
-                    main: { temp_max: 23, temp_min: 16 },
+                    main: { temp_max: 73, temp_min: 61 },
                     weather: [{ main: 'Clouds', description: 'partly cloudy', icon: '02d' }]
                 },
                 {
                     dt: Date.now() / 1000 + 259200,
-                    main: { temp_max: 28, temp_min: 20 },
+                    main: { temp_max: 82, temp_min: 68 },
                     weather: [{ main: 'Clear', description: 'clear sky', icon: '01d' }]
                 },
                 {
                     dt: Date.now() / 1000 + 345600,
-                    main: { temp_max: 21, temp_min: 15 },
+                    main: { temp_max: 70, temp_min: 59 },
                     weather: [{ main: 'Rain', description: 'light rain', icon: '10d' }]
                 },
                 {
                     dt: Date.now() / 1000 + 432000,
-                    main: { temp_max: 26, temp_min: 19 },
+                    main: { temp_max: 79, temp_min: 66 },
                     weather: [{ main: 'Clear', description: 'clear sky', icon: '01d' }]
                 }
             ]
@@ -208,13 +208,13 @@ class WeatherDashboard {
     updateCurrentWeather(data) {
         this.cityName.textContent = data.name;
         this.weatherDate.textContent = this.formatDate(new Date());
-        this.currentTemp.textContent = `${Math.round(data.main.temp)}°`;
+        this.currentTemp.textContent = `${Math.round(data.main.temp)}°F`;
         this.weatherDescription.textContent = data.weather[0].description;
         
-        this.visibility.textContent = `${(data.visibility / 1000).toFixed(1)} km`;
+        this.visibility.textContent = `${(data.visibility / 1609.34).toFixed(1)} mi`;
         this.humidity.textContent = `${data.main.humidity}%`;
-        this.windSpeed.textContent = `${Math.round(data.wind.speed * 3.6)} km/h`;
-        this.feelsLike.textContent = `${Math.round(data.main.feels_like)}°`;
+        this.windSpeed.textContent = `${Math.round(data.wind.speed)} mph`;
+        this.feelsLike.textContent = `${Math.round(data.main.feels_like)}°F`;
         this.pressure.textContent = `${data.main.pressure} hPa`;
         this.uvIndex.textContent = '5'; // UV index would need separate API call
         
@@ -264,8 +264,8 @@ class WeatherDashboard {
                 <i class="${this.getWeatherIconClass(forecast.weather.main)}"></i>
             </div>
             <div class="forecast-temps">
-                <span class="forecast-high">${Math.round(forecast.maxTemp)}°</span>
-                <span class="forecast-low">${Math.round(forecast.minTemp)}°</span>
+                <span class="forecast-high">${Math.round(forecast.maxTemp)}°F</span>
+                <span class="forecast-low">${Math.round(forecast.minTemp)}°F</span>
             </div>
             <div class="forecast-desc">${forecast.weather.description}</div>
         `;

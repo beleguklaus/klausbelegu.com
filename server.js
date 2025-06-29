@@ -22,7 +22,7 @@ app.get('/api/weather/current/:city', async (req, res) => {
   
   try {
     const city = req.params.city;
-    const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`);
+    const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=imperial`);
     const data = await response.json();
     res.json(data);
   } catch (error) {
@@ -38,7 +38,7 @@ app.get('/api/weather/forecast/:city', async (req, res) => {
   
   try {
     const city = req.params.city;
-    const response = await fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}&units=metric`);
+    const response = await fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}&units=imperial`);
     const data = await response.json();
     res.json(data);
   } catch (error) {
@@ -54,8 +54,8 @@ app.get('/api/weather/coords', async (req, res) => {
   
   try {
     const { lat, lon } = req.query;
-    const currentResponse = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`);
-    const forecastResponse = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`);
+    const currentResponse = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=imperial`);
+    const forecastResponse = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=imperial`);
     
     const currentData = await currentResponse.json();
     const forecastData = await forecastResponse.json();
